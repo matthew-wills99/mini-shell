@@ -3,7 +3,9 @@
 #include <string.h>
 
 #define BUF_SIZE 128
+#define DELIMS " \t\r\n"
 
+char** tokenize(char*);
 char* read_input();
 
 int main() {
@@ -12,13 +14,24 @@ int main() {
         printf("> ");
         fflush(stdout);
 
-        char *in = read_input();
+        char* in = read_input();
         if(in == NULL) {
             printf("\n");
             break;
         }
 
-        printf("%s\n", in);
+        char** args = tokenize(in);
+        if(args == NULL) {
+            perror("tokenize");
+            free(in);
+            continue;
+        }
+
+        for(size_t i = 0; args[i] != NULL; i++) {
+            printf("[%zu] %s\n", i, args[i]);
+        }
+        
+        free(args);
         free(in);
     }
 
@@ -53,4 +66,29 @@ char* read_input() {
 
     free(out);
     return NULL;
+}
+
+char** tokenize(char* in) {
+    size_t cap = 8;
+    size_t count = 0;
+    char** tokens = malloc(cap * sizeof(char *));
+    if(tokens == NULL) return NULL;
+
+    char *tok = strtok(in, DELIMS);
+    while(tok != NULL) {
+        if(count + 1 >= cap) {
+            cap *= 2;
+            char **tmp = realloc(tokens, cap * sizeof(char *));
+            if(tmp == NULL) {
+                free(tokens);
+                return NULL;
+            }
+            tokens = tmp;
+        }
+        tokens[count++] = tok;
+        tok = strtok(NULL, DELIMS);
+    }
+
+    tokens[count] = NULL;
+    return tokens;
 }
