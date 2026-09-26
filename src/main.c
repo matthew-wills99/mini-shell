@@ -5,6 +5,16 @@
 #define BUF_SIZE 128
 #define DELIMS " \t\r\n"
 
+typedef struct {
+    const char *name;
+    int (*fn)(char **args);
+    const char *help;
+} builtin_t;
+
+static const builtin_t builtins[] = { };
+
+#define NUM_BUILTINS (sizeof(builtins) / sizeof(builtins[0]))
+
 char** tokenize(char*);
 char* read_input();
 
