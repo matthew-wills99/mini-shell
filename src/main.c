@@ -4,22 +4,10 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+#include "commands.h"
+
 #define BUF_SIZE 128
 #define DELIMS " \t\r\n"
-
-typedef struct {
-    const char *name;
-    int (*fn)(char **args);
-    const char *help;
-} builtin_t;
-
-int sh_echo(char**);
-
-static const builtin_t builtins[] = {
-    {"echo", sh_echo, "echo a message"},
- };
-
-#define NUM_BUILTINS (sizeof(builtins) / sizeof(builtins[0]))
 
 char** tokenize(char*);
 char* read_input();
@@ -127,24 +115,5 @@ int launch(char** args) {
     }
     int status;
     waitpid(pid, &status, 0);
-    return 1;
-}
-
-int sh_echo(char** args) {
-    int newline = 1;
-    size_t i = 1;
-
-    if(args[i] != NULL && strcmp(args[i], "-n") == 0) {
-        newline = 0;
-        i++;
-    }
-
-    for(; args[i] != NULL; i++) {
-        fputs(args[i], stdout);
-        if(args[i + 1] != NULL) putchar(' ');
-    }
-
-    if(newline) putchar('\n');
-    fflush(stdout);
     return 1;
 }
