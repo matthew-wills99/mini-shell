@@ -17,7 +17,7 @@ int launch(char**);
 int main() {
 
     while(1) {
-        printf("> ");
+        printf("%s$ ", getenv("PWD"));
         fflush(stdout);
 
         char* in = read_input();
