@@ -7,6 +7,8 @@ int sh_echo(char**);
 int sh_cd(char**);
 int sh_pwd();
 
+int c_theme(char**);
+
 typedef struct {
     const char *name;
     int (*fn)(char **args);
@@ -17,6 +19,7 @@ static const builtin_t builtins[] = {
     {"echo", sh_echo, "echo a message"},
     {"cd", sh_cd, "change working directory"},
     {"pwd", sh_pwd, "print working directory"},
+    {"theme", c_theme, "edit the theme of the shell"},
 };
 
 #endif

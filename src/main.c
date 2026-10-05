@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 
 #include "commands.h"
+#include "shell.h"
 
 #define BUF_SIZE 128
 #define DELIMS " \t\r\n"
@@ -14,10 +15,13 @@ char* read_input();
 int execute(char**);
 int launch(char**);
 
+char prompt_char = '$';
+int prompt_colour = 84;
+
 int main() {
 
     while(1) {
-        printf("%s$ ", getenv("PWD"));
+        printf("\033[38;5;%dm%s\e\033[0m%c ", prompt_colour, getenv("PWD"), prompt_char);
         fflush(stdout);
 
         char* in = read_input();

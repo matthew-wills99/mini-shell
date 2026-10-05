@@ -3,8 +3,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <limits.h>
+#include <stdbool.h>
 
 #include "commands.h"
+#include "shell.h"
+#include "utils.h"
 
 int sh_echo(char** args) {
     int newline = 1;
@@ -55,4 +58,33 @@ int sh_pwd() {
 
     perror("pwd");
     return 1;
+}
+
+int c_theme(char** args) {
+    if (args[1] == NULL) {
+        fprintf(stderr, "theme: usage: theme [colour] [prompt_char]\n");
+        return 1;
+    }
+
+    int new_colour = prompt_colour;
+    char new_char = prompt_char;
+    bool got_colour = false, got_char = false;
+
+    for (int i = 1; args[i] != NULL && i <= 2; i++) {
+        int colour;
+        if (!got_colour && string_to_int(args[i], &colour)) {
+            new_colour = colour;
+            got_colour = true;
+        } else if (!got_char && string_valid_prompt(args[i])) {
+            new_char = args[i][0];
+            got_char = true;
+        } else {
+            fprintf(stderr, "theme: invalid argument '%s'\n", args[i]);
+            return 1;
+        }
+    }
+
+    prompt_colour = new_colour;
+    prompt_char = new_char;
+    return 0;
 }
