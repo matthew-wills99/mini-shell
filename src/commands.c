@@ -43,3 +43,16 @@ int sh_cd(char** args) {
 
     return 0;
 }
+
+int sh_pwd() {
+    char pwd[PATH_MAX];
+
+    if(getcwd(pwd, sizeof(pwd))) {
+        printf("%s\n", pwd);
+        fflush(stdout);
+        return 0;
+    }
+
+    perror("pwd");
+    return 1;
+}
