@@ -60,6 +60,17 @@ int sh_pwd() {
     return 1;
 }
 
+int sh_help() {
+
+    printf("Help:\n");
+    for(int i = 0; i < (int)ARRAY_SIZE(builtins); i++) {
+        printf(" %-10s %s\n", builtins[i].name, builtins[i].help);
+    }
+
+    fflush(stdout);
+    return 0;
+}
+
 int c_theme(char** args) {
     if (args[1] == NULL) {
         fprintf(stderr, "theme: usage: theme [colour] [prompt_char]\n");
