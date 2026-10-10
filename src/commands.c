@@ -25,7 +25,7 @@ int sh_echo(char** args) {
 
     if(newline) putchar('\n');
     fflush(stdout);
-    return 1;
+    return 0;
 }
 
 int sh_cd(char** args) {
