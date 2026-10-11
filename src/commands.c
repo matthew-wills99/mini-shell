@@ -141,3 +141,9 @@ int sh_theme(char** args) {
     fflush(stdout);
     return 0;
 }
+
+int sh_exit(char** args) {
+    (void)args;
+
+    exit(0);
+}
