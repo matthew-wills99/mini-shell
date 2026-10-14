@@ -114,7 +114,7 @@ int launch(char** args) {
     if (pid < 0) { perror("fork"); return 1; }
     if (pid == 0) {
         execvp(args[0], args);
-        perror(args[0]);
+        fprintf(stderr, "%s: command not found\n", args[0]);
         _exit(127);
     }
     int status;
