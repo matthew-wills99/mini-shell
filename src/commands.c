@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <errno.h>
 
 #include "commands.h"
 #include "shell.h"
@@ -143,7 +144,27 @@ int sh_theme(char** args) {
 }
 
 int sh_exit(char** args) {
-    (void)args;
+    int status = last_status;
 
-    exit(0);
+    if(isatty(STDIN_FILENO)) fprintf(stderr, "exit\n");
+
+    if(args[1] != NULL) {
+        char *end;
+        errno = 0;
+        long val = strtol(args[1], &end, 10);
+
+        if(end == args[1] || *end != '\0' || errno == ERANGE) {
+            fprintf(stderr, "exit %s: numeric argument required\n", args[1]);
+            status = 2;
+        } else if(args[2] != NULL) {
+            fprintf(stderr, "exit: too many arguments\n");
+            last_status = 1;
+            return 1;
+        } else {
+            status = (int)(((val % 256) + 256) % 256);
+        }
+    }
+
+    shell_cleanup();
+    exit(status);
 }

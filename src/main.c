@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 #include "commands.h"
 #include "shell.h"
@@ -17,6 +18,8 @@ int launch(char**);
 
 char prompt_char = '$';
 int prompt_colour = 84;
+
+int last_status = 0;
 
 int main() {
 
@@ -37,7 +40,7 @@ int main() {
             continue;
         }
 
-        if(args != NULL) execute(args);
+        if(args != NULL) last_status = execute(args);
         
         free(args);
         free(in);
