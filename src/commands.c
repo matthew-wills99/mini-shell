@@ -10,7 +10,30 @@
 #include "shell.h"
 #include "utils.h"
 
-int sh_echo(char** args) {
+static int sh_echo(char**);
+static int sh_cd(char**);
+static int sh_pwd(char**);
+static int sh_help(char**);
+static int sh_theme(char**);
+static int sh_exit(char**);
+
+static const builtin_t builtins[] = {
+    {"echo", sh_echo, "echo a message"},
+    {"cd", sh_cd, "change working directory"},
+    {"pwd", sh_pwd, "print working directory"},
+    {"help", sh_help, "display the help message"},
+    {"theme", sh_theme, "edit the theme of the shell"},
+    {"exit", sh_exit, "exit the shell"},
+};
+
+const builtin_t* find_builtin(const char* name) {
+    for(size_t i = 0; i < ARRAY_SIZE(builtins); i++) {
+        if(strcmp(name, builtins[i].name) == 0) return &builtins[i];
+    }
+    return NULL;
+}
+
+static int sh_echo(char** args) {
     int newline = 1;
     size_t i = 1;
 
@@ -29,7 +52,7 @@ int sh_echo(char** args) {
     return 0;
 }
 
-int sh_cd(char** args) {
+static int sh_cd(char** args) {
     char oldpwd[PATH_MAX];
     char newpwd[PATH_MAX];
     const char *target;
@@ -77,7 +100,7 @@ int sh_cd(char** args) {
     return 0;
 }
 
-int sh_pwd(char** args) {
+static int sh_pwd(char** args) {
     (void)args;
 
     char pwd[PATH_MAX];
@@ -92,11 +115,11 @@ int sh_pwd(char** args) {
     return 1;
 }
 
-int sh_help(char** args) {
+static int sh_help(char** args) {
     (void)args;
 
     printf("Help:\n");
-    for(int i = 0; i < (int)ARRAY_SIZE(builtins); i++) {
+    for(size_t i = 0; i < ARRAY_SIZE(builtins); i++) {
         printf(" %-10s %s\n", builtins[i].name, builtins[i].help);
     }
 
@@ -104,7 +127,7 @@ int sh_help(char** args) {
     return 0;
 }
 
-int sh_theme(char** args) {
+static int sh_theme(char** args) {
     if(args[1] == NULL) {
         fprintf(stderr, "theme: usage: theme [colour] [prompt_char]\n");
         return 1;
@@ -143,7 +166,7 @@ int sh_theme(char** args) {
     return 0;
 }
 
-int sh_exit(char** args) {
+static int sh_exit(char** args) {
     int status = last_status;
 
     if(isatty(STDIN_FILENO)) fprintf(stderr, "exit\n");
@@ -158,7 +181,6 @@ int sh_exit(char** args) {
             status = 2;
         } else if(args[2] != NULL) {
             fprintf(stderr, "exit: too many arguments\n");
-            last_status = 1;
             return 1;
         } else {
             status = (int)(((val % 256) + 256) % 256);
