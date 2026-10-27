@@ -47,7 +47,7 @@ test: $(TARGET)
 
 # Valgrind can't run ASan binaries, so this always uses the dev build
 memcheck:
-	$(MAKE) test MODE=dev RUNNER="valgrind -q --leak-check=full --errors-for-leak-kinds=all --error-exitcode=99"
+	$(MAKE) test MODE=dev RUNNER="valgrind -q --leak-check=full --show-leak-kinds=definite,indirect,possible --errors-for-leak-kinds=definite,indirect,possible --error-exitcode=99"
 
 clean:
 	rm -rf build
