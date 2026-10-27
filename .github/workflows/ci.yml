@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cc: [gcc, clang]
+        mode: [dev, debug, release]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: make MODE=${{ matrix.mode }} CC=${{ matrix.cc }}
+      - name: Test
+        run: make test MODE=${{ matrix.mode }} CC=${{ matrix.cc }}
+
+  valgrind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Valgrind
+        run: sudo apt-get update && sudo apt-get install -y valgrind
+      - name: Test under Valgrind
+        run: make memcheck

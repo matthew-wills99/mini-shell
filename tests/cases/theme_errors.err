@@ -1,0 +1,3 @@
+theme: usage: theme [colour] [prompt_char]
+theme: colour out of range (0, 255) '999'
+theme: too many arguments

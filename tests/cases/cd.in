@@ -1,0 +1,7 @@
+pwd
+mkdir sub
+cd sub
+pwd
+cd -
+cd
+pwd
