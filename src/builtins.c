@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <errno.h>
 
-#include "commands.h"
+#include "builtins.h"
 #include "shell.h"
 #include "utils.h"
 
