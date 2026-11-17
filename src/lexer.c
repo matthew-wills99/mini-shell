@@ -47,6 +47,10 @@ char** tokenize(char* in) {
                 else if (*r == '"') {
                     state = DOUBLE_QUOTE;
                 }
+                else if (*r == '\\') {
+                    if (r[1] != '\0') r++;
+                    *w++ = *r;
+                }
                 else if (IS_DELIM(*r)) {
                     break;
                 }
@@ -65,6 +69,11 @@ char** tokenize(char* in) {
             else if (state == DOUBLE_QUOTE) {
                 if (*r == '"') {
                     state = NORMAL;
+                }
+                else if (*r == '\\' && (r[1] == '"' || r[1] == '\\' ||
+                                       r[1] == '$' || r[1] == '`')) {
+                    r++;
+                    *w++ = *r;
                 }
                 else {
                     *w++ = *r;

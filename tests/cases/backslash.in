@@ -1,0 +1,5 @@
+echo a\ b\ \ c
+echo \"hi\" \\ \|x\;
+echo "a\"b\\c\n\$"
+echo 'a\b'
+echo a\
